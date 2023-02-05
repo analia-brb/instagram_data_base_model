@@ -15,14 +15,17 @@ class User(Base):
     user_name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     password = Column(String(250), nullable=False)
-    bio = Column(String(250), nullable=False)
     
 
-class Followers(Base):
-    __tablename__ = 'followers'
+class Follower(Base):
+    __tablename__ = 'follower'
     id = Column(Integer, primary_key=True)
-    follower_id = Column(String(250), nullable=False)
-    user_id = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+class Following(Base):
+    __tablename__ = 'following'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
 
 class Post(Base):
     __tablename__ = 'post'
@@ -32,16 +35,17 @@ class Post(Base):
 class Comment(Base):
     __tablename__ = 'comment'
     id = Column(Integer, primary_key=True)
-    comment_text = Column(Integer, ForeignKey('comment.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
+    following_id = Column(Integer, ForeignKey('following.id'))
+    follower_id = Column(Integer, ForeignKey('follower.id'))
     post_id = Column(Integer, ForeignKey('post_id.id'))
 
 class Likes(Base):
     __tablename__ = 'likes'
     id = Column(Integer, primary_key=True)
+    following_id = Column(Integer, ForeignKey('following.id'))
     follower_id = Column(Integer, ForeignKey('follower.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
-    comment_id = Column(Integer, ForeignKey('comment.id'))
 
 
     def to_dict(self):
